@@ -14,6 +14,14 @@
         {% endblock %}
     </head>
     <body>
+        <div id="sidebar">
+            <ul>
+                <li>
+                    <a href="{{ path('/loto'), {slug: loto} }}">Loto</a>
+                </li>
+                <li><a href="{{ path('/dhi-loto', { slug: DhiLoto}) }}">DhiLoto</a></li>
+            </ul>
+        </div>
         {% block body %}{% endblock %}
     </body>
 </html>
