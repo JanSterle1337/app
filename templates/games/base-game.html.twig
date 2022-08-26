@@ -43,6 +43,25 @@
                     </div>
                 </form>
             </div>
+
+            {% if playedCombination is not null %}
+                <div class="container mt-5 d-flex justify-content-center">
+                    <p>
+                    {% for number in generatedCombination.getNumbers %}
+
+                        {% if number in matchedCombination.getNumbers %}
+                            <span class='alert alert-success'>{{ number }}</span>
+                        {% else %}
+                            <span class='alert alert-danger'>{{ number }}</span>
+                        {% endif %}
+
+                   {% endfor %}
+                    </p>
+            {% endif %}
+
         {% endblock %}
+
+
+
     </body>
 </html>

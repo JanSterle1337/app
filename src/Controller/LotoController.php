@@ -3,10 +3,18 @@ namespace App\Controller;
 
 use App\Entity\Combination;
 use App\Repository\GameRepository;
+use App\Entity\Lot;
 use App\Entity\Game;
+use App\Entity\GameTicket;
+use App\Entity\PlayingGame;
+use App\Service\BoundaryChecker;
 use App\Service\CheckCombinationFormat;
+use App\Service\CombinationGenerator;
+use App\Service\CombinationMatcher;
 use App\Service\DuplicateNumberChecker;
 use App\Utils\StringToArrayConverter;
+use DateTimeImmutable;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -49,9 +57,14 @@ class LotoController extends AbstractController
         GameRepository $gameRepository, 
         CheckCombinationFormat $checkCombinationFormat,
         StringToArrayConverter $stringToArrayConverter,
-        DuplicateNumberChecker $duplicateNumberChecker
+        DuplicateNumberChecker $duplicateNumberChecker,
+        BoundaryChecker $boundaryChecker,
+        CombinationGenerator $combinationGenerator,
+        CombinationMatcher $combinationMatcher,
+        ManagerRegistry $doctrine
         ): Response
     {
+        $entityManager = $doctrine->getManager();
         $game = $gameRepository->findOneBy(["slug" => $slug]);
         echo "<pre>";
         var_dump($game->getHowManyNumbers()); 
@@ -70,11 +83,36 @@ class LotoController extends AbstractController
 
         $playedCombination = new Combination($userData, $duplicateNumberChecker);
 
-        echo "<pre>";
-        var_dump($userData);
-        echo "</pre>";
+        $userTicket = new GameTicket($playedCombination, $game, $boundaryChecker);
 
-        echo "Vse je okej";
-        return new Response($slug);
+        $gameLot = new Lot($combinationGenerator, $boundaryChecker, $duplicateNumberChecker, $game);
+
+        $matchedCombination = $combinationMatcher->createIntersectedCombination($userTicket->getCombination(), $gameLot->getCombination());
+
+        $playedGame = new PlayingGame();
+        $playedGame->setGame($game);
+        $playedGame->setCombinations([
+            'playedCombination' => $userTicket->getCombination()->getNumbers(),
+            'generatedCombination' => $gameLot->getCombination()->getNumbers(),
+            'matchedCombination' => $matchedCombination->getNumbers()
+        ]);
+        $playedGame->setPlayedAt(new DateTimeImmutable());
+
+        $entityManager->persist($playedGame);
+        $entityManager->flush();
+
+        return new Response(
+            $this->render(
+                'games/base-game.html.twig',
+                [
+                    'slug' => 'loto',
+                    'errors' => "",
+                    'playedCombination' => $userTicket->getCombination(),
+                    'generatedCombination' => $gameLot->getCombination(),
+                    'matchedCombination' => $matchedCombination,
+                    'success' => false
+                ]
+            )->getContent()
+        );
     }
 }
