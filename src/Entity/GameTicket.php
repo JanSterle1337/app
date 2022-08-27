@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Service\BoundaryChecker;
-use http\Exception\RuntimeException;
 use RuntimeException as GlobalRuntimeException;
 
 //GameTicket is an object that holds the information of user's choosen combination.

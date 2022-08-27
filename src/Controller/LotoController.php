@@ -22,8 +22,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class LotoController extends AbstractController 
 {
-
-
     #[Route(
         '/games/{slug}', 
         methods: ['GET', 'HEAD']
@@ -35,7 +33,7 @@ class LotoController extends AbstractController
         $this->render(
             'games/base-game.html.twig',
             [
-                'slug' => 'loto',
+                'slug' => $slug,
                 'errors' => "",
                 'playedCombination' => null,
                 'generatedCombination' => null,
@@ -50,6 +48,7 @@ class LotoController extends AbstractController
         '/games/{slug}',
         methods: ['POST']
         ) 
+
     ]
     public function playAction(
         Request $request, 
@@ -66,9 +65,6 @@ class LotoController extends AbstractController
     {
         $entityManager = $doctrine->getManager();
         $game = $gameRepository->findOneBy(["slug" => $slug]);
-        echo "<pre>";
-        var_dump($game->getHowManyNumbers()); 
-        echo "</pre>";
         
         if (!$checkCombinationFormat->checkComboFormat($request->request->get("loto-combination"), $game->getHowManyNumbers())) {
             return new Response(
@@ -82,10 +78,8 @@ class LotoController extends AbstractController
         $userData = $stringToArrayConverter->convert(", ", " ", "loto-combination", $request->request->all());
 
         $playedCombination = new Combination($userData, $duplicateNumberChecker);
-
         $userTicket = new GameTicket($playedCombination, $game, $boundaryChecker);
-
-        $gameLot = new Lot($combinationGenerator, $boundaryChecker, $duplicateNumberChecker, $game);
+        $gameLot = new Lot($combinationGenerator, $game);
 
         $matchedCombination = $combinationMatcher->createIntersectedCombination($userTicket->getCombination(), $gameLot->getCombination());
 
@@ -105,7 +99,7 @@ class LotoController extends AbstractController
             $this->render(
                 'games/base-game.html.twig',
                 [
-                    'slug' => 'loto',
+                    'slug' => $slug,
                     'errors' => "",
                     'playedCombination' => $userTicket->getCombination(),
                     'generatedCombination' => $gameLot->getCombination(),

@@ -11,7 +11,7 @@ class Combination
     /**
      * @param array<int> $data
      */
-    public function __construct(array $data, DuplicateNumberChecker $duplicateNumberChecker) //tuki manka se duplicatenumberchecker
+    public function __construct(array $data, DuplicateNumberChecker $duplicateNumberChecker)
     {
         if ($duplicateNumberChecker->hasDuplicates($data)) {
             throw new Exception("Your input is incorrect");

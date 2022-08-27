@@ -15,12 +15,11 @@
     </head>
     <body>
         {% block body %}
-            <h1 class="mt-3 text-center fw-bold">Welcome to Loto</h1>
+            <h1 class="mt-3 text-center fw-bold">Welcome to {{ slug }}</h1>
             <div class="container">
-                {{ slug }}
                 <form action="/games/{{ slug }}" method="POST">
                     <div class="mb-4">
-                        <label class="form-label fw-semibold">enter your Loto combination</label>
+                        <label class="form-label fw-semibold">enter your {{ slug }} combination</label>
 
                         {% if playedCombination is same as null %}
                             <input type="text" name="loto-combination" class="form-control"  placeholder="12, 15, 2, 5, 6, 2, 39">
