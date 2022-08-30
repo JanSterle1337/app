@@ -14,7 +14,7 @@ class Game
     private ?int $id = null;
 
     #[ORM\Column(length: 30)]
-    private ?string $slug = null;
+    private ?string $slug = null; //gameType objekt
 
     #[ORM\Column]
     private ?int $minimumNumber = null;

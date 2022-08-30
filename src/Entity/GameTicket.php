@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use App\Service\BoundaryChecker;
-use RuntimeException as GlobalRuntimeException;
+use RuntimeException as GlobalRuntimeException; //pusti sam runtime exception
 
 //GameTicket is an object that holds the information of user's choosen combination.
 //This combination has to follow specific game rules otherwise the ticker is not valid
@@ -15,7 +15,7 @@ class GameTicket
     {
         if (!$boundaryChecker->isWithIn($combination->getNumbers(), $game->getMinimumNumber(), $game->getMaximumNumber())) {
 
-            throw new GlobalRuntimeException();
+            throw new GlobalRuntimeException(); //napis nek message
         }
 
         if (count($combination->getNumbers()) > $game->getHowManyNumbers()) {

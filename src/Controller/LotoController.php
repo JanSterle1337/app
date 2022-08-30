@@ -35,7 +35,7 @@ class LotoController extends AbstractController
             [
                 'slug' => $slug,
                 'errors' => "",
-                'playedCombination' => null,
+                'playedCombination' => null, //twig is defined
                 'generatedCombination' => null,
                 'matchedCombination' => null,
                 'success' => false
@@ -48,9 +48,8 @@ class LotoController extends AbstractController
         '/games/{slug}',
         methods: ['POST']
         ) 
-
     ]
-    public function playAction(
+    public function playAction(  //v konstruktor določene zadeve
         Request $request, 
         string $slug, 
         GameRepository $gameRepository, 
@@ -75,7 +74,7 @@ class LotoController extends AbstractController
                 );
         }
 
-        $userData = $stringToArrayConverter->convert(", ", " ", "loto-combination", $request->request->all());
+        $userData = $stringToArrayConverter->convert(", ", " ", "loto-combination", $request->request->all()); //numbers
 
         $playedCombination = new Combination($userData, $duplicateNumberChecker);
         $userTicket = new GameTicket($playedCombination, $game, $boundaryChecker);
@@ -87,7 +86,7 @@ class LotoController extends AbstractController
         $playedGame->setGame($game);
         $playedGame->setCombinations([
             'playedCombination' => $userTicket->getCombination()->getNumbers(),
-            'generatedCombination' => $gameLot->getCombination()->getNumbers(),
+            'generatedCombination' => $gameLot->getCombination()->getNumbers(), //drawncombination
             'matchedCombination' => $matchedCombination->getNumbers()
         ]);
         $playedGame->setPlayedAt(new DateTimeImmutable());
