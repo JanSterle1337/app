@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+        {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
+        {% endblock %}
+
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
+    </head>
+    <body>
+        <div class="container border border-dark" style="height: 600px">
+           <div class="row align-items-start border border-dark">
+                <div class="col border border-dark">
+                    <h1 class="fs-1">Loto</h1>
+                    <a href="/games/Loto/ticket">Buy ticket</a>
+                </div>
+                <div class="col border border-dark">
+                    <h1 class="fs-1">DhiLoto</h1>
+                    <a href="/games/DhiLoto/ticket">Buy ticket</a>
+                </div>
+           </div>
+        </div>
+    </body>
+</html>

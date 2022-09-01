@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity;
+namespace App\EntityHelpers;
 
 use App\Service\BoundaryChecker;
 use RuntimeException as GlobalRuntimeException; //pusti sam runtime exception

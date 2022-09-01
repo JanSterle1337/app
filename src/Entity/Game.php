@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\GameRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: GameRepository::class)]
@@ -24,6 +26,14 @@ class Game
 
     #[ORM\Column]
     private ?int $howManyNumbers = null;
+
+    #[ORM\OneToMany(mappedBy: 'gameID', targetEntity: GameRound::class)]
+    private Collection $gameRounds;
+
+    public function __construct()
+    {
+        $this->gameRounds = new ArrayCollection();
+    }
 
     public function __toString()
     {
@@ -79,6 +89,36 @@ class Game
     public function setHowManyNumbers(int $howManyNumbers): self
     {
         $this->howManyNumbers = $howManyNumbers;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, GameRound>
+     */
+    public function getGameRounds(): Collection
+    {
+        return $this->gameRounds;
+    }
+
+    public function addGameRound(GameRound $gameRound): self
+    {
+        if (!$this->gameRounds->contains($gameRound)) {
+            $this->gameRounds->add($gameRound);
+            $gameRound->setGameID($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGameRound(GameRound $gameRound): self
+    {
+        if ($this->gameRounds->removeElement($gameRound)) {
+            // set the owning side to null (unless already changed)
+            if ($gameRound->getGameID() === $this) {
+                $gameRound->setGameID(null);
+            }
+        }
 
         return $this;
     }
