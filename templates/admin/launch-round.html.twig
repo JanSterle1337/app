@@ -1,0 +1,36 @@
+{% extends '@!EasyAdmin/layout.html.twig' %}
+
+{% block content_title %}Launch game events{% endblock %}
+
+{% block main %}
+    <table class="datagrid">
+        <thead>
+            <tr>
+                <td><b>id</b></td>
+                <td><b>event name</b></td>
+                <td><b>scheduled at</b></td>
+                <td><b>game name</b></td>
+                <td><b>status</b></td>
+            </tr>
+        </thead>
+        <tbody>
+                {% for gameRound in gameRounds %}
+                    <tr>
+                        <td>{{ gameRound.id }}</td>
+                        <td>{{ gameRound.getName }}</td>
+                        <td>{{ gameRound.getDateAndTime }}</td>
+                        <td>{{ gameRound.gameID.getSlug }}</td>
+                        <td>
+                            <form action="/admin/launch-game/{{gameRound.id}}" method="POST">
+                                {% if gameRound.isPlayedAlready is same as false %}
+                                    <button class="btn btn-primary" type="submit" name="launchGame">launch</button>
+                                {% else %}
+                                    <button typ="button" class="btn btn-danger" disabled>ended</button>
+                                {% endif %}  
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

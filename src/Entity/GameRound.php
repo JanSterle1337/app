@@ -78,6 +78,14 @@ class GameRound
         return $this;
     }
 
+    public function getDateAndTime()
+    {
+        $dateTime = $this->getScheduledAt();
+       
+        return $dateTime->format('d-m-Y H-i-s');
+    }
+
+
     public function getName(): ?string
     {
         return $this->name;

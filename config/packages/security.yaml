@@ -34,6 +34,7 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
          - { path: ^/admin, roles: ROLE_ADMIN }
+         - { path: ^/admin/launch-game, roles: ROLE_ADMIN }
          - { path: ^/games/Loto, roles: ROLE_USER }
          - { path: ^/games/DhiLoto, roles: ROLE_USER }
          - { path: ^/results, roles: ROLE_USER}

@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\GameRound;
 use App\Entity\User;
+use App\Controller\Admin\LaunchRoundEventController;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -13,6 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
 class DashboardController extends AbstractDashboardController
 {
+
     #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
@@ -49,6 +51,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToRoute('Back to home', 'fas fa-home', '_home');
         yield MenuItem::linkToCrud('Game rounds', 'fas fa-dice', GameRound::class);
         yield MenuItem::linkToCrud('Users', 'fas fa-light fa-user', User::class);
+        yield MenuItem::linkToRoute('Events', 'fa-solid fa-bell', '_launch-game');
         // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
     }
 }
