@@ -3,8 +3,10 @@
 namespace App\Entity;
 
 use App\Repository\TicketRepository;
+use App\Service\BoundaryChecker;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use RuntimeException;
 
 #[ORM\Entity(repositoryClass: TicketRepository::class)]
 class Ticket
@@ -13,9 +15,6 @@ class Ticket
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
-    #[ORM\Column(type: Types::ARRAY)]
-    private array $playedCombination = [];
 
     #[ORM\Column]
     private ?int $gameID = null;
@@ -34,22 +33,14 @@ class Ticket
     #[ORM\JoinColumn(nullable: false)]
     private ?GameRound $gameRoundID = null;
 
+    #[ORM\OneToOne(inversedBy: 'ticket', cascade: ['persist', 'remove'])]
+    private ?GameCombination $combination = null;
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getPlayedCombination(): array
-    {
-        return $this->playedCombination;
-    }
-
-    public function setPlayedCombination(array $playedCombination): self
-    {
-        $this->playedCombination = $playedCombination;
-
-        return $this;
-    }
 
     public function getGameID(): ?int
     {
@@ -112,6 +103,34 @@ class Ticket
     public function setGameRoundID(?GameRound $gameRoundID): self
     {
         $this->gameRoundID = $gameRoundID;
+
+        return $this;
+    }
+
+    public function getCombination(): ?GameCombination
+    {
+        return $this->combination;
+    }
+
+    public function setCombination(?GameCombination $combination, BoundaryChecker $boundaryChecker = null): self
+    {
+        if ($combination === null) {
+
+            $this->combination = $combination;
+
+            return $this;
+
+        }
+
+        if (!$boundaryChecker->isWithIn($combination->getNumbers(), $this->gameRoundID->getGameID()->getMinimumNumber(), $this->gameRoundID->getGameID()->getMaximumNumber())) {
+            throw new RuntimeException("The combination contains numbers that are either to big or too small for the current game rules");
+        }
+
+        if (count($combination->getNumbers()) > $this->gameRoundID->getGameID()->getHowManyNumbers()) {
+            throw new RuntimeException("Your combination has too many numbers for the current game");
+        }
+
+        $this->combination = $combination;
 
         return $this;
     }

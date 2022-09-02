@@ -2,8 +2,8 @@
 
 namespace App\Controller\Admin;
 
-use App\Controller\HomeController;
 use App\Entity\GameRound;
+use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -47,7 +47,8 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToRoute('Back to home', 'fas fa-home', '_home');
-        yield MenuItem::linkToDashboard('Game rounds', 'fas fa-dice', GameRound::class);
+        yield MenuItem::linkToCrud('Game rounds', 'fas fa-dice', GameRound::class);
+        yield MenuItem::linkToCrud('Users', 'fas fa-light fa-user', User::class);
         // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
     }
 }
