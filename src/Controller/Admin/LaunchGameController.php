@@ -3,13 +3,30 @@ namespace App\Controller\Admin;
 
 use App\Repository\GameRepository;
 use App\Repository\GameRoundRepository;
+use App\Repository\TicketRepository;
+use App\Service\Drawer;
+use App\Service\DuplicateNumberChecker;
+use App\Service\TicketToGameRoundCombinationMatcher;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class LaunchGameController extends AbstractController
 {
+    private DuplicateNumberChecker $duplicateNumberChecker;
+    private TicketToGameRoundCombinationMatcher $ticketToGameRoundCombinationMatcher;
+
+    public function __construct(
+        DuplicateNumberChecker $duplicateNumberChecker,
+        TicketToGameRoundCombinationMatcher $ticketToGameRoundCombinationMatcher
+        )
+    {
+        $this->duplicateNumberChecker = $duplicateNumberChecker;
+        $this->ticketToGameRoundCombinationMatcher = $ticketToGameRoundCombinationMatcher;
+    }
+
     #[Route(
         '/admin/launch-game',
         name: '_launch-game',
@@ -35,17 +52,26 @@ class LaunchGameController extends AbstractController
         name: '_launch-home-posted',
         methods: ['POST']
     )]
-    public function postAction(string $id,ManagerRegistry $doctrine, GameRoundRepository $gameRoundRepository, GameRepository $gameRepository): Response
+    public function postAction(string $id,ManagerRegistry $doctrine, TicketRepository $ticketRepository ,GameRoundRepository $gameRoundRepository, GameRepository $gameRepository)
     {
         $entityManager = $doctrine->getManager();
 
         $gameRound = $gameRoundRepository->findOneBy(["id" => $id ]);
         $game = $gameRepository->findOneBy(["id" => $gameRound->getGameID()->getId()]);
 
-        //$roundGeneratedCombination
+        $drawer = new Drawer($this->duplicateNumberChecker);
+        $gameCombination = $drawer->drawCombination($game);
 
-        dd($game);
+        $gameRound->setDrawnCombination($gameCombination->getNumbers());
+        $gameRound->setPlayedAlready(true);
+
+        $entityManager->persist($gameRound);
+        $entityManager->flush();
         
-        return new Response("Launched");
+        $tickets = $ticketRepository->findAllByRoundID($gameRound->getId());
+        
+        $this->ticketToGameRoundCombinationMatcher->createTicketResult($tickets, $entityManager);
+        
+        return new RedirectResponse('/admin');
     }
 }

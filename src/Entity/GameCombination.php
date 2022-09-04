@@ -19,7 +19,7 @@ class GameCombination
     #[ORM\Column(type: Types::ARRAY, nullable: true)]
     private array $numbers = [];
 
-    #[ORM\OneToOne(mappedBy: 'combination', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'combination', cascade: ['remove'])]
     private ?Ticket $ticket = null;
 
     public function __construct(DuplicateNumberChecker $duplicateNumberChecker, array $numbers)

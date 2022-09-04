@@ -38,6 +38,15 @@ class GameRoundRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+    /*
+    public function findAllTicketsForGameRound(int $gameRoundID, int $ticketID): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = '
+            SELECT 
+        '
+    }*/
 
 //    /**
 //     * @return GameRound[] Returns an array of GameRound objects

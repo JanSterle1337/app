@@ -29,13 +29,13 @@ class GameRound
     #[ORM\JoinColumn(nullable: false)]
     private ?Game $gameID = null;
 
-    #[ORM\OneToMany(mappedBy: 'gameRoundID', targetEntity: Result::class)]
+    #[ORM\OneToMany(mappedBy: 'gameRoundID', targetEntity: Result::class, cascade: ['remove'])]
     private Collection $results;
 
     #[ORM\Column(type: 'boolean', nullable: false, options: ['default' => false])]
     private ?bool $playedAlready = false;
 
-    #[ORM\OneToMany(mappedBy: 'gameRoundID', targetEntity: Ticket::class)]
+    #[ORM\OneToMany(mappedBy: 'gameRoundID', targetEntity: Ticket::class,  cascade: ['remove'])]
     private Collection $tickets;
 
     public function __construct()
