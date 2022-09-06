@@ -18,7 +18,7 @@ class HomeController extends AbstractController
     {
         return new Response(
             $this->render(
-                'home.html.twig',
+                'home-header.html.twig',
                 [
                     'errors' => null
                 ]

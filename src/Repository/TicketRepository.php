@@ -42,7 +42,7 @@ class TicketRepository extends ServiceEntityRepository
     public function findAllByRoundID($gameRoundID): array 
     {
         return $this->createQueryBuilder('ticket')
-            ->andWhere('ticket.gameRoundID = :id')
+            ->andWhere('ticket.gameRound = :id')
             ->setParameter('id', $gameRoundID)
             ->getQuery()
             ->getResult()

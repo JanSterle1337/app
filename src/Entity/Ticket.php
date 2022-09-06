@@ -31,7 +31,7 @@ class Ticket
 
     #[ORM\ManyToOne(inversedBy: 'tickets')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?GameRound $gameRoundID = null;
+    private ?GameRound $gameRound = null;
 
     #[ORM\OneToOne(inversedBy: 'ticket', cascade: ['persist', 'remove'])]
     private ?GameCombination $combination = null;
@@ -95,14 +95,14 @@ class Ticket
         return $this;
     }
 
-    public function getGameRoundID(): ?GameRound
+    public function getGameRound(): ?GameRound
     {
-        return $this->gameRoundID;
+        return $this->gameRound;
     }
 
-    public function setGameRoundID(?GameRound $gameRoundID): self
+    public function setGameRound(?GameRound $gameRound): self
     {
-        $this->gameRoundID = $gameRoundID;
+        $this->gameRound = $gameRound;
 
         return $this;
     }
@@ -122,11 +122,11 @@ class Ticket
 
         }
 
-        if (!$boundaryChecker->isWithIn($combination->getNumbers(), $this->gameRoundID->getGameID()->getMinimumNumber(), $this->gameRoundID->getGameID()->getMaximumNumber())) {
+        if (!$boundaryChecker->isWithIn($combination->getNumbers(), $this->gameRound->getGameID()->getMinimumNumber(), $this->gameRound->getGameID()->getMaximumNumber())) {
             throw new RuntimeException("The combination contains numbers that are either to big or too small for the current game rules");
         }
 
-        if (count($combination->getNumbers()) > $this->gameRoundID->getGameID()->getHowManyNumbers()) {
+        if (count($combination->getNumbers()) > $this->gameRound->getGameID()->getHowManyNumbers()) {
             throw new RuntimeException("Your combination has too many numbers for the current game");
         }
 

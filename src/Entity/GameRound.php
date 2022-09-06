@@ -29,13 +29,13 @@ class GameRound
     #[ORM\JoinColumn(nullable: false)]
     private ?Game $gameID = null;
 
-    #[ORM\OneToMany(mappedBy: 'gameRoundID', targetEntity: Result::class, cascade: ['remove'])]
+    #[ORM\OneToMany(mappedBy: 'gameRound', targetEntity: Result::class, cascade: ['remove'])]
     private Collection $results;
 
     #[ORM\Column(type: 'boolean', nullable: false, options: ['default' => false])]
     private ?bool $playedAlready = false;
 
-    #[ORM\OneToMany(mappedBy: 'gameRoundID', targetEntity: Ticket::class,  cascade: ['remove'])]
+    #[ORM\OneToMany(mappedBy: 'gameRound', targetEntity: Ticket::class,  cascade: ['remove'])]
     private Collection $tickets;
 
     public function __construct()
@@ -122,7 +122,7 @@ class GameRound
     {
         if (!$this->results->contains($result)) {
             $this->results->add($result);
-            $result->setGameRoundID($this);
+            $result->setGameRound($this);
         }
 
         return $this;
@@ -132,8 +132,8 @@ class GameRound
     {
         if ($this->results->removeElement($result)) {
             // set the owning side to null (unless already changed)
-            if ($result->getGameRoundID() === $this) {
-                $result->setGameRoundID(null);
+            if ($result->getGameRound() === $this) {
+                $result->setGameRound(null);
             }
         }
 
@@ -164,7 +164,7 @@ class GameRound
     {
         if (!$this->tickets->contains($ticket)) {
             $this->tickets->add($ticket);
-            $ticket->setGameRoundID($this);
+            $ticket->setGameRound($this);
         }
 
         return $this;
@@ -174,8 +174,8 @@ class GameRound
     {
         if ($this->tickets->removeElement($ticket)) {
             // set the owning side to null (unless already changed)
-            if ($ticket->getGameRoundID() === $this) {
-                $ticket->setGameRoundID(null);
+            if ($ticket->getGameRound() === $this) {
+                $ticket->setGameRound(null);
             }
         }
 

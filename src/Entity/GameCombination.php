@@ -44,7 +44,7 @@ class GameCombination
         return $this->numbers;
     }
 
-    private function setNumbers(?array $numbers): self
+    public function setNumbers(?array $numbers): self
     {
         $this->numbers = $numbers;
 

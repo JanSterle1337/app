@@ -21,12 +21,12 @@ class TicketToGameRoundCombinationMatcher
     {
         foreach($tickets as $ticket) {
             
-            $matchedGameCombination = $this->combinationMatcher->createIntersectedCombination($ticket->getCombination()->getNumbers(), $ticket->getGameRoundId()->getDrawnCombination());
+            $matchedGameCombination = $this->combinationMatcher->createIntersectedCombination($ticket->getCombination()->getNumbers(), $ticket->getGameRound()->getDrawnCombination());
 
             $result = new Result();
             $result->setMatchedCombination($matchedGameCombination->getNumbers());
             $result->setTicketID($ticket);
-            $result->setGameRoundID($ticket->getGameRoundId());
+            $result->setGameRound($ticket->getGameRound());  //prej je blo tuki $result->setGameRound($ticket->getGameRoundId());
             
             $entityManager->persist($result);
             $entityManager->flush();

@@ -23,7 +23,7 @@ class Result
 
     #[ORM\ManyToOne(inversedBy: 'results')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?GameRound $gameRoundID = null;
+    private ?GameRound $gameRound = null;
 
     public function getId(): ?int
     {
@@ -54,14 +54,14 @@ class Result
         return $this;
     }
 
-    public function getGameRoundID(): ?GameRound
+    public function getGameRound(): ?GameRound
     {
-        return $this->gameRoundID;
+        return $this->gameRound;
     }
 
-    public function setGameRoundID(?GameRound $gameRoundID): self
+    public function setGameRound(?GameRound $gameRound): self
     {
-        $this->gameRoundID = $gameRoundID;
+        $this->gameRound = $gameRound;
 
         return $this;
     }

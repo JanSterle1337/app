@@ -22,15 +22,25 @@ class GameRoundCrudController extends AbstractCrudController
     }
 
     
-    public function configureFields(string $pageName): iterable
+    public function configureFields(string $pageName = 'Game rounds'): iterable
     {
-        yield AssociationField::new('gameID');
-        yield TextField::new('name');
+        yield AssociationField::new('gameID')->setLabel('game name');
+        yield TextField::new('name')->setLabel('event');
         yield DateTimeField::new('scheduledAt')->setFormTypeOptions([
             'html5' => true,
             'widget' => 'single_text'
-        ]);
-        yield BooleanField::new('playedAlready');
+        ])->setLabel('scheduled at');
+        yield BooleanField::new('playedAlready')->setFormTypeOptions([
+            'disabled' => true
+        ])->setLabel('played already');
+    }
+
+    public function  configureCrud(Crud $crud): Crud
+    {
+        return $crud 
+        ->setEntityLabelInSingular('game round')
+        ->setPageTitle(CRUD::PAGE_INDEX,'Game rounds')
+        ;
     }
     
 }

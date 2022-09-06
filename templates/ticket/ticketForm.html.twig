@@ -1,3 +1,6 @@
+{% extends 'home.html.twig' %}
+
+{% block body %}
 <!DOCTYPE html>
 <html>
     <head>
@@ -15,23 +18,29 @@
     </head>
     <body>
 
-        {% for gameRound in gameRounds %}
-            <div class="container">
-                <form method="POST" action="/games/{{ slug }}/ticket">
-                    <h1>{{gameRound.getName() }}</h1>
-
-                    <input type="hidden" name="gameRoundID" value="{{ gameRound.getId }} "/>
-
-                    <input type="hidden" name="gameID" value={{ gameRound.getGameID.getId }} />
-
-                    <label>Write your combination</label>
-                    <input type="text" name="combination" />
-
-                    <button type="submit" name="submit">Submit</button>
-
-                </form>
+        {% if howManyRounds == 0 %}
+            <div class="container mt-3">
+                <h3 class="text-center">There are no rounds held for current game. Please check later</h3>
             </div>
-        {% endfor %}
+        {% else %}
+            {% for gameRound in gameRounds %}
+                <div class="container">
+                    <form method="POST" action="/games/{{ slug }}/ticket">
+                        <h1>{{gameRound.getName() }}</h1>
 
+                        <input type="hidden" name="gameRoundID" value="{{ gameRound.getId }} "/>
+
+                        <input type="hidden" name="gameID" value={{ gameRound.getGameID.getId }} />
+
+                        <label>Write your combination</label>
+                        <input type="text" name="combination" />
+
+                        <button type="submit" name="submit">Submit</button>
+
+                    </form>
+                </div>
+            {% endfor %}
+        {% endif %}
     </body>
 </html>
+{% endblock %}

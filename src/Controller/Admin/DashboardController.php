@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\GameRound;
 use App\Entity\User;
 use App\Controller\Admin\LaunchRoundEventController;
+use App\Entity\Game;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -52,6 +53,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Game rounds', 'fas fa-dice', GameRound::class);
         yield MenuItem::linkToCrud('Users', 'fas fa-light fa-user', User::class);
         yield MenuItem::linkToRoute('Events', 'fa-solid fa-bell', '_launch-game');
+        yield MenuItem::linkToCrud('Games','fa-sharp fa-solid fa-plus', Game::class);
         // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
     }
 }
