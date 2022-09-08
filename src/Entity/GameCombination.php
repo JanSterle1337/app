@@ -26,7 +26,7 @@ class GameCombination
     {
         if ($duplicateNumberChecker->hasDuplicates($numbers)) {
 
-            throw new \Exception("Your number combination has duplicate numbers");
+            throw new \Exception("Your combination contains duplicate numbers");
 
         }
 

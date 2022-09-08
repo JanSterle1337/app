@@ -4,9 +4,7 @@ namespace App\Controller;
 
 use App\Repository\GameCombinationRepository;
 use App\Repository\GameRoundRepository;
-use App\Repository\ResultRepository;
 use App\Repository\SQLRepository;
-use App\Repository\UserRepository;
 use App\Service\DuplicateNumberChecker;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,21 +13,29 @@ use Symfony\Component\Routing\Annotation\Route;
 class ResultController extends AbstractController
 {
     private DuplicateNumberChecker $duplicateNumberChecker;
+    private GameRoundRepository $gameRoundRepository;
+    private GameCombinationRepository $gameCombinationRepository;
 
-    public function __construct(DuplicateNumberChecker $duplicateNumberChecker)
+    public function __construct(
+        DuplicateNumberChecker $duplicateNumberChecker, 
+        GameRoundRepository $gameRoundRepository, 
+        GameCombinationRepository $gameCombinationRepository,
+        )
     {
         $this->duplicateNumberChecker = $duplicateNumberChecker;
+        $this->gameRoundRepository = $gameRoundRepository;
+        $this->gameCombinationRepository = $gameCombinationRepository;
     }
 
     #[Route(
         '/results',
         methods: ['GET']
     )]
-    public function showAction(SQLRepository $sqlRepository, GameRoundRepository $gameRoundRepository, GameCombinationRepository $gameCombinationRepository): Response
+    public function showAction(SQLRepository $sqlRepository): Response
     {
         $user = $this->getUser();
         $email = $user->getUserIdentifier();
-        $userAndTickets = $sqlRepository->getUserTicketsForAllEvents($email);
+        $userAndTickets = $sqlRepository->getUserTicketsForAllEvents($email); //finds all user tickets
 
         if ($userAndTickets == null) {
 
@@ -40,13 +46,14 @@ class ResultController extends AbstractController
             );
         }
 
+
         foreach ($userAndTickets->getTickets() as $ticket) {
 
             $id = $ticket->getGameRound()->getId();
             $combinationID = $ticket->getCombination()->getId();
-            $ticket->getGameRound()->setDrawnCombination($gameRoundRepository->findOneBy(["id" => $id])->getDrawnCombination());
-            $ticket->getCombination()->setNumbers($gameCombinationRepository->findOneBy(["id" => $combinationID])->getNumbers(), $this->duplicateNumberChecker);
-
+            $ticket->getGameRound()->setDrawnCombination($this->gameRoundRepository->findOneBy(["id" => $id])->getDrawnCombination());
+            $ticket->getCombination()->setNumbers($this->gameCombinationRepository->findOneBy(["id" => $combinationID])->getNumbers(), $this->duplicateNumberChecker); //I dont want to set the combination with setter
+            //dd($ticket);
         }
 
         return new Response(

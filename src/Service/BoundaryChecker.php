@@ -8,9 +8,8 @@ class BoundaryChecker
      * @param array<int> $data
      *
      */
-    public function isWithIn(array $data, int $min, int $max): bool //isWithIn
+    public function isWithIn(array $data, int $min, int $max): bool
     {
-
         foreach ($data as $number) {
 
             if ($number < $min || $number > $max) {

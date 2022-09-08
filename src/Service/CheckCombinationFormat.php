@@ -10,7 +10,6 @@ class CheckCombinationFormat
         $pattern = sprintf("/^(([1-9]0?)+, ){%s}([1-9]0?)+$/", $repetition);
 
         if (preg_match($pattern, $data)) {
-
             return true;
         }
 

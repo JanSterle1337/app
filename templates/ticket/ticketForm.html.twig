@@ -17,26 +17,32 @@
         {% endblock %}
     </head>
     <body>
-
+        <div class="container mt-3">
+            <h2 class="text-center">{{ gameRules.slug }} rules: </h2>
+            <ul class="text-center" style="text-align:center; list-style-type: none; color: red;">
+                <li>Minimum inputed number can be {{ gameRules.minimumNumber }}</li>
+                <li>Maximum inputed number can be {{ gameRules.maximumNumber }}</li>
+                <li>The combination must consist of {{ gameRules.howManyNumbers }} numbers</li>
+            </ul>
+        </div>
         {% if howManyRounds == 0 %}
             <div class="container mt-3">
                 <h3 class="text-center">There are no rounds held for current game. Please check later</h3>
             </div>
         {% else %}
             {% for gameRound in gameRounds %}
-                <div class="container">
-                    <form method="POST" action="/games/{{ slug }}/ticket">
-                        <h1>{{gameRound.getName() }}</h1>
+                <div class="container mt-3">
+                    <form method="POST" action="/games/{{ slug }}/ticket" style="display: flex; flex-direction: column; justify-content:center; align-items: center;">
+                        <h2>{{gameRound.getName() }}</h2>
 
                         <input type="hidden" name="gameRoundID" value="{{ gameRound.getId }} "/>
 
                         <input type="hidden" name="gameID" value={{ gameRound.getGameID.getId }} />
 
-                        <label>Write your combination</label>
+                        <label class="mb-1">Write your combination</label>
                         <input type="text" name="combination" />
 
-                        <button type="submit" name="submit">Submit</button>
-
+                        <button class="btn btn-primary m-2" type="submit" name="submit">Submit</button>
                     </form>
                 </div>
             {% endfor %}

@@ -4,7 +4,7 @@ namespace App\Service;
 
 class DuplicateNumberChecker
 {
-    /***
+    /**
      * @param array<int> $data
      */
     public function hasDuplicates(array $data): bool

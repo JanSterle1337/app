@@ -54,8 +54,8 @@ class TicketController extends AbstractController
     )]
     public function showAction(string $slug, Request $request): Response
     {
-        $ticket = new Ticket();
         $game = $this->gameRepository->findOneBy(["slug" => $slug]);
+        $ticket = new Ticket();
         $ticket->setGameID($game->getId());
 
         $gameRounds = $this->gameRoundRepository->findBy([
@@ -71,7 +71,8 @@ class TicketController extends AbstractController
                 [
                     'howManyRounds' => $howManyRounds,
                     'slug' => $slug,
-                    'gameRounds' => $gameRounds
+                    'gameRounds' => $gameRounds,
+                    'gameRules' => $game
                 ]
                 )->getContent()
         );
@@ -81,22 +82,18 @@ class TicketController extends AbstractController
         '/games/{slug}/ticket',
         methods: ['POST']
     )]
-    public function postAction(
-    string $slug, 
-    Request $request, 
-    ManagerRegistry $doctrine
-    ): Response
+    public function postAction(string $slug, Request $request, ManagerRegistry $doctrine): Response
     {
-        
+        $gameRoundID = $request->request->get("gameRoundID");
+        $inputedCombination = $request->request->get("combination");
 
         $entityManager = $doctrine->getManager();
         $ticket = new Ticket();
 
-        $gameRoundID = $request->request->get("gameRoundID");
         $gameRound = $this->gameRoundRepository->findOneBy(["id" => $gameRoundID]);
-        $inputedCombination = $request->request->get("combination");
+        
 
-        $email = $this->getUser()->getUserIdentifier();
+        $email = $this->getUser()->getUserIdentifier(); //I want to retrieve id automaticlly but doesnt work
         $user = $this->userRepository->findUserByEmail($email);
 
         if (!$this->checkCombinationFormat->checkComboFormat($inputedCombination, $gameRound->getGameID()->getHowManyNumbers())) {
@@ -110,11 +107,9 @@ class TicketController extends AbstractController
                         ]
                     )->getContent()
                 );
-
         }
 
         $inputedCombination = $this->stringToArrayConverter->converter(", "," ", $inputedCombination); 
-
         $combination = new GameCombination($this->duplicateNumberChecker, $inputedCombination);
 
         $ticket->setGameRound($gameRound);
