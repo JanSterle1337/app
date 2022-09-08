@@ -2,14 +2,33 @@
 
 namespace App\Tests;
 
+use App\Service\CheckCombinationFormat;
 use PHPUnit\Framework\TestCase;
 
 class CheckCombinationFormatTest extends TestCase
 {
-    public function testSomething(): void
+    /** @test */
+    public function testOptimalCase(): void 
     {
-        $inputedCombination = "1, 20, 30, 32, 34";
-        $repetition = 5;
-        $this->assertTrue(true);
+        $checkCombinationFormat = new CheckCombinationFormat();
+        $result = $checkCombinationFormat->checkComboFormat("1, 20, 30, 32, 34, 50", 6);
+        $this->assertSame(true, $result);
+    }
+
+    /** @test */
+    public function testWrongInputedCombinationCase(): void 
+    {
+        $checkCombinationFormat = new CheckCombinationFormat();
+        $result = $checkCombinationFormat->checkComboFormat("1,20,30,32,34,50", 6);
+        $this->assertSame(false, $result);
+    }
+
+    /** @test */
+    public function testWrongInputedRepetitionCase(): void 
+    {
+        $checkCombinationFormat = new CheckCombinationFormat();
+        $result = $checkCombinationFormat->checkComboFormat("1, 20, 30, 32, 34, 50", 5);
+        $this->assertSame(false, $result);
+
     }
 }
