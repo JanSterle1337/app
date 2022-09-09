@@ -16,7 +16,7 @@ class Game
     private ?int $id = null;
 
     #[ORM\Column(length: 30)]
-    private ?string $slug = null; //gameType objekt
+    private ?string $slug = null; //gameType objekt //loto,DhiLoto
 
     #[ORM\Column]
     private ?int $minimumNumber = null;
@@ -26,9 +26,6 @@ class Game
 
     #[ORM\Column]
     private ?int $howManyNumbers = null;
-
-    #[ORM\OneToMany(mappedBy: 'gameID', targetEntity: GameRound::class)]
-    private Collection $gameRounds;
 
     public function __construct()
     {
@@ -89,36 +86,6 @@ class Game
     public function setHowManyNumbers(int $howManyNumbers): self
     {
         $this->howManyNumbers = $howManyNumbers;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, GameRound>
-     */
-    public function getGameRounds(): Collection
-    {
-        return $this->gameRounds;
-    }
-
-    public function addGameRound(GameRound $gameRound): self
-    {
-        if (!$this->gameRounds->contains($gameRound)) {
-            $this->gameRounds->add($gameRound);
-            $gameRound->setGameID($this);
-        }
-
-        return $this;
-    }
-
-    public function removeGameRound(GameRound $gameRound): self
-    {
-        if ($this->gameRounds->removeElement($gameRound)) {
-            // set the owning side to null (unless already changed)
-            if ($gameRound->getGameID() === $this) {
-                $gameRound->setGameID(null);
-            }
-        }
 
         return $this;
     }

@@ -4,7 +4,7 @@ namespace App\Service;
 
 class CheckCombinationFormat
 {
-    public function checkComboFormat(string $data, int $repetition): bool
+    public function checkComboFormat(string $data, int $repetition): bool //isValid poimenovanje npr
     {
         $repetition -= 1;
         /*PATTERN INFO
