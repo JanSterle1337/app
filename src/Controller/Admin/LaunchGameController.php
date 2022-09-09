@@ -38,8 +38,11 @@ class LaunchGameController extends AbstractController
 
         $gameRounds = $gameRoundRepository->findAll();
 
-       
-        $gameRounds[0]->getDateAndTime();
+    
+       if (!empty($gameRounds)) {
+            $gameRounds[0]->getDateAndTime();
+        }
+        
         
 
         return $this->render('admin/launch-round.html.twig', [
@@ -57,20 +60,21 @@ class LaunchGameController extends AbstractController
         $entityManager = $doctrine->getManager();
 
         $gameRound = $gameRoundRepository->findOneBy(["id" => $id ]);
-        $game = $gameRepository->findOneBy(["id" => $gameRound->getGameID()->getId()]);
 
         $drawer = new Drawer($this->duplicateNumberChecker);
-        $gameCombination = $drawer->drawCombination($game);
+        $gameCombination = $drawer->drawCombination($gameRound->getGame());
 
-        $gameRound->setDrawnCombination($gameCombination->getNumbers());
-        $gameRound->setPlayedAlready(true);
+        $gameRound->setDrawnCombination($gameCombination->getNumbers()); //kar COmbination shran
+        $gameRound->setPlayedAlready(true); //fix it
 
-        $entityManager->persist($gameRound);
+        $entityManager->persist($gameRound); //nardim preko add metode v repositoryu
         $entityManager->flush();
         
-        $tickets = $ticketRepository->findAllByRoundID($gameRound->getId());
+        $tickets = $ticketRepository->findBy(["gameRound" => $gameRound]); //specificna metoda npr findByGameRound
+
+        //dd($tickets);
         
-        $this->ticketToGameRoundCombinationMatcher->createTicketResult($tickets, $entityManager);
+        $this->ticketToGameRoundCombinationMatcher->createTicketResult($tickets);
         
         return new RedirectResponse('/admin');
     }

@@ -27,20 +27,13 @@ class GameRound
 
     #[ORM\ManyToOne(inversedBy: 'gameRounds')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Game $gameID = null;
-
-    #[ORM\OneToMany(mappedBy: 'gameRound', targetEntity: Result::class, cascade: ['remove'])]
-    private Collection $results;
+    private ?Game $game = null;
 
     #[ORM\Column(type: 'boolean', nullable: false, options: ['default' => false])]
     private ?bool $playedAlready = false;
 
-    #[ORM\OneToMany(mappedBy: 'gameRound', targetEntity: Ticket::class,  cascade: ['remove'])]
-    private Collection $tickets;
-
     public function __construct()
     {
-        $this->results = new ArrayCollection();
         $this->tickets = new ArrayCollection();
     }
 
@@ -98,44 +91,14 @@ class GameRound
         return $this;
     }
 
-    public function getGameID(): ?Game
+    public function getGame(): ?Game
     {
-        return $this->gameID;
+        return $this->game;
     }
 
-    public function setGameID(?Game $gameID): self
+    public function setGame(?Game $game): self
     {
-        $this->gameID = $gameID;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Result>
-     */
-    public function getResults(): Collection
-    {
-        return $this->results;
-    }
-
-    public function addResult(Result $result): self
-    {
-        if (!$this->results->contains($result)) {
-            $this->results->add($result);
-            $result->setGameRound($this);
-        }
-
-        return $this;
-    }
-
-    public function removeResult(Result $result): self
-    {
-        if ($this->results->removeElement($result)) {
-            // set the owning side to null (unless already changed)
-            if ($result->getGameRound() === $this) {
-                $result->setGameRound(null);
-            }
-        }
+        $this->game= $game;
 
         return $this;
     }
@@ -151,35 +114,4 @@ class GameRound
 
         return $this;
     }
-
-    /**
-     * @return Collection<int, Ticket>
-     */
-    public function getTickets(): Collection
-    {
-        return $this->tickets;
-    }
-
-    public function addTicket(Ticket $ticket): self
-    {
-        if (!$this->tickets->contains($ticket)) {
-            $this->tickets->add($ticket);
-            $ticket->setGameRound($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTicket(Ticket $ticket): self
-    {
-        if ($this->tickets->removeElement($ticket)) {
-            // set the owning side to null (unless already changed)
-            if ($ticket->getGameRound() === $this) {
-                $ticket->setGameRound(null);
-            }
-        }
-
-        return $this;
-    }
-
 }

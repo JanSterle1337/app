@@ -24,7 +24,7 @@ class GameRoundCrudController extends AbstractCrudController
     
     public function configureFields(string $pageName = 'Game rounds'): iterable
     {
-        yield AssociationField::new('gameID')->setLabel('game name');
+        yield AssociationField::new('game')->setLabel('game name');
         yield TextField::new('name')->setLabel('event');
         yield DateTimeField::new('scheduledAt')->setFormTypeOptions([
             'html5' => true,

@@ -10,11 +10,11 @@ use PHPUnit\Framework\TestCase;
 
 class DrawerTest extends TestCase
 {
-    public function testDrawer(): void
+    public function testDrawer(): void //change name of method
     {
         $duplicateNumberChecker = new DuplicateNumberChecker();
 
-        $game = new Game();
+        $game = new Game(); //preko konstruktorjev
         $game->setHowManyNumbers(7);
         $game->setMinimumNumber(1);
         $game->setMaximumNumber(39);
@@ -23,7 +23,9 @@ class DrawerTest extends TestCase
         $expectedCombination = $drawer->drawCombination($game);
 
         $this->assertIsObject($expectedCombination);
-        $this->assertClassHasAttribute("numbers", GameCombination::class);
+
+        //remove
+        $this->assertClassHasAttribute("numbers", GameCombination::class); //combination shpuld include a method for length of array
 
         $numbers = $expectedCombination->getNumbers();
         $howManyNumbers = count($numbers);

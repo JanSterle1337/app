@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Repository\GameCombinationRepository;
 use App\Repository\GameRoundRepository;
 use App\Repository\SQLRepository;
+use App\Repository\TicketRepository;
+use App\Repository\UserRepository;
 use App\Service\DuplicateNumberChecker;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,30 +14,30 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ResultController extends AbstractController
 {
-    private DuplicateNumberChecker $duplicateNumberChecker;
-    private GameRoundRepository $gameRoundRepository;
-    private GameCombinationRepository $gameCombinationRepository;
+    private UserRepository $userRepository;
+    private TicketRepository $ticketRepository;
 
     public function __construct(
-        DuplicateNumberChecker $duplicateNumberChecker, 
-        GameRoundRepository $gameRoundRepository, 
-        GameCombinationRepository $gameCombinationRepository,
+        UserRepository $userRepository,
+        TicketRepository $ticketRepository
         )
     {
-        $this->duplicateNumberChecker = $duplicateNumberChecker;
-        $this->gameRoundRepository = $gameRoundRepository;
-        $this->gameCombinationRepository = $gameCombinationRepository;
+        $this->userRepository = $userRepository;
+        $this->ticketRepository = $ticketRepository;
     }
 
     #[Route(
         '/results',
         methods: ['GET']
     )]
-    public function showAction(SQLRepository $sqlRepository): Response
+    public function showAction(): Response
     {
         $user = $this->getUser();
         $email = $user->getUserIdentifier();
-        $userAndTickets = $sqlRepository->getUserTicketsForAllEvents($email); //finds all user tickets
+        dd($user);
+        $user= $this->userRepository->findOneBy(["email" => $email]); //svoja metoda
+
+        $userAndTickets = $this->ticketRepository->findAllUsersTickets($user); //fixi poi,enovanje
 
         if ($userAndTickets == null) {
 
@@ -44,16 +46,6 @@ class ResultController extends AbstractController
                     "errors" => "You haven't participated in any events yet."
                 ])->getContent()
             );
-        }
-
-
-        foreach ($userAndTickets->getTickets() as $ticket) {
-
-            $id = $ticket->getGameRound()->getId();
-            $combinationID = $ticket->getCombination()->getId();
-            $ticket->getGameRound()->setDrawnCombination($this->gameRoundRepository->findOneBy(["id" => $id])->getDrawnCombination());
-            $ticket->getCombination()->setNumbers($this->gameCombinationRepository->findOneBy(["id" => $combinationID])->getNumbers(), $this->duplicateNumberChecker); //I dont want to set the combination with setter
-            //dd($ticket);
         }
 
         return new Response(

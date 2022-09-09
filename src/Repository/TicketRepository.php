@@ -39,14 +39,16 @@ class TicketRepository extends ServiceEntityRepository
         }
     }
 
-    public function findAllByRoundID($gameRoundID): array 
+    public function findAllUsersTickets($user)
     {
         return $this->createQueryBuilder('ticket')
-            ->andWhere('ticket.gameRound = :id')
-            ->setParameter('id', $gameRoundID)
-            ->getQuery()
-            ->getResult()
-        ;
+        ->join('ticket.user', 'user')
+        ->join('ticket.combination', 'combination')
+        ->addSelect('ticket')
+        ->andWhere('user = :user')
+        ->setParameter('user', $user)
+        ->getQuery()
+        ->getResult();
     }
 
 //    /**

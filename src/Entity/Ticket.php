@@ -3,10 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TicketRepository;
-use App\Service\BoundaryChecker;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use RuntimeException;
 
 #[ORM\Entity(repositoryClass: TicketRepository::class)]
 class Ticket
@@ -17,80 +15,67 @@ class Ticket
     private ?int $id = null;
 
     #[ORM\Column]
-    private ?int $gameID = null;
+    private ?\DateTimeImmutable $scheduledAt = null;
 
-    #[ORM\Column(options: ['default' => "CURRENT_TIMESTAMP"])]
-    private ?\DateTimeImmutable $createdAt = null;
-
-    #[ORM\ManyToOne(inversedBy: 'tickets')]
+    #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $userID = null;
+    private ?User $user = null;
 
-    #[ORM\OneToOne(mappedBy: 'ticketID', cascade: ['persist', 'remove'])]
-    private ?Result $result = null;
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?GameCombination $combination = null;
 
-    #[ORM\ManyToOne(inversedBy: 'tickets')]
+    #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?GameRound $gameRound = null;
 
-    #[ORM\OneToOne(inversedBy: 'ticket', cascade: ['persist', 'remove'])]
-    private ?GameCombination $combination = null;
+    #[ORM\Column(type: Types::ARRAY, nullable: true)]
+    private ?array $matchedNumbers = [];
+
+    public function __construct(GameRound $gameRound, User $user, GameCombination $gameCombination)
+    {
+        $this->gameRound = $gameRound;
+        $this->user = $user;
+        $this->combination = $gameCombination;        
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-
-    public function getGameID(): ?int
+    public function getScheduledAt(): ?\DateTimeImmutable
     {
-        return $this->gameID;
+        return $this->scheduledAt;
     }
 
-    public function setGameID(int $gameID): self
+    public function setScheduledAt(\DateTimeImmutable $scheduledAt): self
     {
-        $this->gameID = $gameID;
+        $this->scheduledAt = $scheduledAt;
 
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getUser(): ?User
     {
-        return $this->createdAt;
+        return $this->user;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    public function setUser(?User $user): self
     {
-        $this->createdAt = $createdAt;
+        $this->user = $user;
 
         return $this;
     }
 
-    public function getUserID(): ?User
+    public function getCombination(): ?GameCombination
     {
-        return $this->userID;
+        return $this->combination;
     }
 
-    public function setUserID(?User $userID): self
+    public function setCombination(GameCombination $combination): self
     {
-        $this->userID = $userID;
-
-        return $this;
-    }
-
-    public function getResult(): ?Result
-    {
-        return $this->result;
-    }
-
-    public function setResult(Result $result): self
-    {
-        // set the owning side of the relation if necessary
-        if ($result->getTicketID() !== $this) {
-            $result->setTicketID($this);
-        }
-
-        $this->result = $result;
+        $this->combination = $combination;
 
         return $this;
     }
@@ -107,30 +92,14 @@ class Ticket
         return $this;
     }
 
-    public function getCombination(): ?GameCombination
+    public function getMatchedNumbers(): array
     {
-        return $this->combination;
+        return $this->matchedNumbers;
     }
 
-    public function setCombination(?GameCombination $combination, BoundaryChecker $boundaryChecker = null): self
+    public function setMatchedNumbers(?array $matchedNumbers): self
     {
-        if ($combination === null) {
-
-            $this->combination = $combination;
-
-            return $this;
-
-        }
-
-        if (!$boundaryChecker->isWithIn($combination->getNumbers(), $this->gameRound->getGameID()->getMinimumNumber(), $this->gameRound->getGameID()->getMaximumNumber())) {
-            throw new RuntimeException("The combination contains numbers that are either to big or too small for the current game rules");
-        }
-
-        if (count($combination->getNumbers()) > $this->gameRound->getGameID()->getHowManyNumbers()) {
-            throw new RuntimeException("Your combination has too many numbers for the current game");
-        }
-
-        $this->combination = $combination;
+        $this->matchedNumbers = $matchedNumbers;
 
         return $this;
     }

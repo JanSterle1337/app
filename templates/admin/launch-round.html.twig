@@ -19,7 +19,7 @@
                         <td>{{ gameRound.id }}</td>
                         <td>{{ gameRound.getName }}</td>
                         <td>{{ gameRound.getDateAndTime }}</td>
-                        <td>{{ gameRound.gameID.getSlug }}</td>
+                        <td>{{ gameRound.game.getSlug }}</td>
                         <td>
                             <form action="/admin/launch-game/{{gameRound.id}}" method="POST">
                                 {% if gameRound.isPlayedAlready is same as false %}

@@ -19,9 +19,6 @@ class GameCombination
     #[ORM\Column(type: Types::ARRAY, nullable: true)]
     private array $numbers = [];
 
-    #[ORM\OneToOne(mappedBy: 'combination', cascade: ['remove'])]
-    private ?Ticket $ticket = null;
-
     public function __construct(DuplicateNumberChecker $duplicateNumberChecker, array $numbers)
     {
         if ($duplicateNumberChecker->hasDuplicates($numbers)) {
@@ -32,7 +29,6 @@ class GameCombination
 
         $this->setNumbers($numbers);
     }
-
 
     public function getId(): ?int
     {
@@ -47,28 +43,6 @@ class GameCombination
     public function setNumbers(?array $numbers): self
     {
         $this->numbers = $numbers;
-
-        return $this;
-    }
-
-    public function getTicket(): ?Ticket
-    {
-        return $this->ticket;
-    }
-
-    public function setTicket(?Ticket $ticket, BoundaryChecker $boundaryChecker): self
-    {
-        // unset the owning side of the relation if necessary
-        if ($ticket === null && $this->ticket !== null) {
-            $this->ticket->setCombination(null);
-        }
-
-        // set the owning side of the relation if necessary
-        if ($ticket !== null && $ticket->getCombination() !== $this) {
-            $ticket->setCombination($this, $boundaryChecker);
-        }
-
-        $this->ticket = $ticket;
 
         return $this;
     }

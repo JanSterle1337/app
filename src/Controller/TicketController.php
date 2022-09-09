@@ -1,7 +1,7 @@
 <?php 
 namespace App\Controller;
 
-
+use App\Entity\Game;
 use App\Entity\GameCombination;
 use App\Entity\Ticket;
 use App\Repository\GameRepository;
@@ -46,23 +46,22 @@ class TicketController extends AbstractController
         $this->gameRepository = $gameRepository;
         $this->gameRoundRepository = $gameRoundRepository;
         $this->userRepository = $userRepository;
+        //inject clock interface
     }
 
     #[Route(
-        '/games/{slug}/ticket',
+        '/games/{id}/ticket',
         methods: ['GET']
     )]
-    public function showAction(string $slug, Request $request): Response
+    public function showAction(Game $game, Request $request): Response
     {
         $game = $this->gameRepository->findOneBy(["slug" => $slug]);
-        $ticket = new Ticket();
-        $ticket->setGameID($game->getId());
 
         $gameRounds = $this->gameRoundRepository->findBy([
-            "gameID" => $game,
+            "game" => $game,
             "playedAlready" => false
         ]);
-        
+
         $howManyRounds = count($gameRounds);
 
         return new Response(
@@ -78,53 +77,48 @@ class TicketController extends AbstractController
         );
     }
 
+    //User user v route
     #[Route(
         '/games/{slug}/ticket',
         methods: ['POST']
     )]
     public function postAction(string $slug, Request $request, ManagerRegistry $doctrine): Response
     {
-        $gameRoundID = $request->request->get("gameRoundID");
+        $gameRoundId = $request->request->get("gameRoundID");
         $inputedCombination = $request->request->get("combination");
 
-        $entityManager = $doctrine->getManager();
-        $ticket = new Ticket();
+        $entityManager = $doctrine->getManager(); //v konstruktorju tudi repositorye...
 
-        $gameRound = $this->gameRoundRepository->findOneBy(["id" => $gameRoundID]);
-        
+        $gameRound = $this->gameRoundRepository->findOneBy(["id" => $gameRoundId]);
+
+        if (!$this->checkCombinationFormat->checkComboFormat($inputedCombination, $gameRound->getGame()->getHowManyNumbers())) {
+            
+            return new Response(
+                $this->render(
+                    'error/ticketError.html.twig',
+                    [
+                        "errors" => "Combination was written incorrectly",
+                        "slug" => $slug
+                    ]
+                )->getContent()
+            );
+        }
+
+        $inputedCombination = $this->stringToArrayConverter->converter(", "," ", $inputedCombination);
+        $combination = new GameCombination($this->duplicateNumberChecker, $inputedCombination);
 
         $email = $this->getUser()->getUserIdentifier(); //I want to retrieve id automaticlly but doesnt work
         $user = $this->userRepository->findUserByEmail($email);
 
-        if (!$this->checkCombinationFormat->checkComboFormat($inputedCombination, $gameRound->getGameID()->getHowManyNumbers())) {
-            
-                return new Response(
-                    $this->render(
-                        'error/ticketError.html.twig',
-                        [
-                            "errors" => "Combination was written incorrectly",
-                            "slug" => $slug
-                        ]
-                    )->getContent()
-                );
-        }
+        $ticket = new Ticket($gameRound, $user, $combination);
+        $ticket->setScheduledAt(new DateTimeImmutable());
 
-        $inputedCombination = $this->stringToArrayConverter->converter(", "," ", $inputedCombination); 
-        $combination = new GameCombination($this->duplicateNumberChecker, $inputedCombination);
+        $entityManager->persist($combination); //remove
+        $entityManager->flush(); //remove
 
-        $ticket->setGameRound($gameRound);
-        $ticket->setGameID($gameRound->getGameID()->getId());
-        $ticket->setUserID($user);
-        $ticket->setCreatedAt(new DateTimeImmutable());
-        $ticket->setCombination($combination, $this->boundaryChecker);
-        
-        $entityManager->persist($combination);
-        $entityManager->flush();
-
-        $entityManager->persist($ticket);
+        $entityManager->persist($ticket);  //tickerRepository->add() uporabi
         $entityManager->flush();
 
         return new RedirectResponse('/');
     }
-
 }
