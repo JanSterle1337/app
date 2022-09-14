@@ -1,33 +1,32 @@
 <?php 
 namespace App\Service;
 
-use App\Entity\Result;
-use App\Repository\GameCombinationRepository;
+use App\Repository\TicketRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class TicketToGameRoundCombinationMatcher 
 {
     private CombinationMatcher $combinationMatcher;
     private EntityManager $entityManager;
+    private TicketRepository $ticketRepository;
 
-    public function __construct(CombinationMatcher $combinationMatcher, GameCombinationRepository $gameCombinationRepositoryl, EntityManagerInterface $entityManager)
+
+    public function __construct(CombinationMatcher $combinationMatcher, TicketRepository $ticketRepository, EntityManagerInterface $entityManager)
     {
         $this->combinationMatcher = $combinationMatcher;
         $this->entityManager = $entityManager;
+        $this->ticketRepository = $ticketRepository;
     }
 
     public function createTicketResult(array $tickets)
     {
         foreach($tickets as $ticket) {
             
-            $matchedGameCombination = $this->combinationMatcher->createIntersectedCombination($ticket->getCombination()->getNumbers(), $ticket->getGameRound()->getDrawnCombination());
+            $matchedGameCombination = $this->combinationMatcher->createIntersectedCombination($ticket->getCombination()->getNumbers(), $ticket->getGameRound()->getDrawnCombination()->getNumbers());
 
-            $ticket->setMatchedNumbers($matchedGameCombination->getNumbers());
-
-            $this->entityManager->persist($ticket); //add
-            $this->entityManager->flush(); //add
+            $ticket->setMatchedCombination($matchedGameCombination);
+            $this->ticketRepository->add($ticket, true);
         }
     }
 }

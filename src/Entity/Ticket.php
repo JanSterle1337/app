@@ -15,7 +15,7 @@ class Ticket
     private ?int $id = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $scheduledAt = null;
+    private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
@@ -23,20 +23,21 @@ class Ticket
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private ?GameCombination $combination = null;
+    private ?Combination $combination = null;
+
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: true)]
+    private  ?Combination $matchedCombination = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?GameRound $gameRound = null;
 
-    #[ORM\Column(type: Types::ARRAY, nullable: true)]
-    private ?array $matchedNumbers = [];
-
-    public function __construct(GameRound $gameRound, User $user, GameCombination $gameCombination)
+    public function __construct(GameRound $gameRound, User $user,Combination $combination)
     {
         $this->gameRound = $gameRound;
         $this->user = $user;
-        $this->combination = $gameCombination;        
+        $this->combination = $combination;        
     }
 
     public function getId(): ?int
@@ -44,14 +45,14 @@ class Ticket
         return $this->id;
     }
 
-    public function getScheduledAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->scheduledAt;
+        return $this->createdAt;
     }
 
-    public function setScheduledAt(\DateTimeImmutable $scheduledAt): self
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
-        $this->scheduledAt = $scheduledAt;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
@@ -68,16 +69,28 @@ class Ticket
         return $this;
     }
 
-    public function getCombination(): ?GameCombination
+    public function getCombination(): ?Combination
     {
         return $this->combination;
     }
 
-    public function setCombination(GameCombination $combination): self
+    public function setCombination(Combination $combination): self
     {
         $this->combination = $combination;
 
         return $this;
+    }
+
+    public function setMatchedCombination(Combination $combination): self
+    {
+        $this->matchedCombination = $combination;
+
+        return $this;
+    }
+
+    public function getMatchedCombination(): ?Combination
+    {
+        return $this->matchedCombination;
     }
 
     public function getGameRound(): ?GameRound
@@ -88,18 +101,6 @@ class Ticket
     public function setGameRound(?GameRound $gameRound): self
     {
         $this->gameRound = $gameRound;
-
-        return $this;
-    }
-
-    public function getMatchedNumbers(): array
-    {
-        return $this->matchedNumbers;
-    }
-
-    public function setMatchedNumbers(?array $matchedNumbers): self
-    {
-        $this->matchedNumbers = $matchedNumbers;
 
         return $this;
     }

@@ -28,7 +28,7 @@ class DrawerTest extends TestCase
         $this->assertClassHasAttribute("numbers", GameCombination::class); //combination shpuld include a method for length of array
 
         $numbers = $expectedCombination->getNumbers();
-        $howManyNumbers = count($numbers);
+        $howManyNumbers = $expectedCombination->numbersLength();
 
         $this->assertEquals($game->getHowManyNumbers(), $howManyNumbers);
     }

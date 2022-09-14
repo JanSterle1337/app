@@ -1,7 +1,7 @@
 <?php 
 namespace App\Service;
 
-use App\Entity\GameCombination;
+use App\Entity\Combination;
 
 class CombinationMatcher ///combinationMatcher
 {
@@ -16,11 +16,11 @@ class CombinationMatcher ///combinationMatcher
      * @param array<int> $ticketNumbers
      * @param array<int> $gameRoundNumbers
      */
-    public function createIntersectedCombination(array $ticketNumbers, array $gameRoundNumbers): GameCombination//first, second
+    public function createIntersectedCombination(array $ticketNumbers, array $gameRoundNumbers): Combination//first, second
     {
         $matchedNumbers = array_intersect($ticketNumbers,$gameRoundNumbers);
         sort($matchedNumbers); //converts array to an indexed normalized array
         
-        return new GameCombination($this->duplicateNumberChecker, $matchedNumbers);
+        return new Combination($this->duplicateNumberChecker, $matchedNumbers);
     }
 }

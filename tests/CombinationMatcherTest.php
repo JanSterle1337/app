@@ -18,7 +18,6 @@ class CombinationMatcherTest extends TestCase
         $gameCombination = $combinationMatcher->createIntersectedCombination([1, 2, 3, 4, 5], [4, 6, 5, 10, 11]);
 
         $this->assertIsObject($gameCombination);
-        $this->assertClassHasAttribute('numbers', GameCombination::class);
         $this->assertEquals($expectedGameCombination, $gameCombination);
     }
 
@@ -31,7 +30,6 @@ class CombinationMatcherTest extends TestCase
         $gameCombination = $combinationMatcher->createIntersectedCombination([1, 2, 3, 4, 5], [10, 20, 30, 40, 50]);
 
         $this->assertIsObject($gameCombination);
-        $this->assertClassHasAttribute('numbers', GameCombination::class);
         $this->assertEquals($expectedGameCombination, $gameCombination);
     }
 }

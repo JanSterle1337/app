@@ -1,12 +1,14 @@
 <?php
 namespace App\Controller\Admin;
 
+use App\Entity\GameRound;
 use App\Repository\GameRepository;
 use App\Repository\GameRoundRepository;
 use App\Repository\TicketRepository;
 use App\Service\Drawer;
 use App\Service\DuplicateNumberChecker;
 use App\Service\TicketToGameRoundCombinationMatcher;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -17,14 +19,24 @@ class LaunchGameController extends AbstractController
 {
     private DuplicateNumberChecker $duplicateNumberChecker;
     private TicketToGameRoundCombinationMatcher $ticketToGameRoundCombinationMatcher;
+    private GameRoundRepository $gameRoundRepository;
+    private EntityManagerInterface $entityManager;
+    private TicketRepository $ticketRepository;
 
     public function __construct(
         DuplicateNumberChecker $duplicateNumberChecker,
-        TicketToGameRoundCombinationMatcher $ticketToGameRoundCombinationMatcher
+        TicketToGameRoundCombinationMatcher $ticketToGameRoundCombinationMatcher,
+        GameRoundRepository $gameRoundRepository,
+        TicketRepository $ticketRepository,
+        EntityManagerInterface $entityManager
         )
     {
         $this->duplicateNumberChecker = $duplicateNumberChecker;
         $this->ticketToGameRoundCombinationMatcher = $ticketToGameRoundCombinationMatcher;
+        $this->gameRoundRepository = $gameRoundRepository;
+        $this->entityManager = $entityManager;
+        $this->ticketRepository = $ticketRepository;
+
     }
 
     #[Route(
@@ -55,25 +67,16 @@ class LaunchGameController extends AbstractController
         name: '_launch-home-posted',
         methods: ['POST']
     )]
-    public function postAction(string $id,ManagerRegistry $doctrine, TicketRepository $ticketRepository ,GameRoundRepository $gameRoundRepository, GameRepository $gameRepository)
+    public function postAction(GameRound $gameRound)
     {
-        $entityManager = $doctrine->getManager();
-
-        $gameRound = $gameRoundRepository->findOneBy(["id" => $id ]);
-
         $drawer = new Drawer($this->duplicateNumberChecker);
+
         $gameCombination = $drawer->drawCombination($gameRound->getGame());
+        $gameRound->setDrawnCombination($gameCombination); //kar COmbination shran
 
-        $gameRound->setDrawnCombination($gameCombination->getNumbers()); //kar COmbination shran
-        $gameRound->setPlayedAlready(true); //fix it
-
-        $entityManager->persist($gameRound); //nardim preko add metode v repositoryu
-        $entityManager->flush();
+        $this->gameRoundRepository->add($gameRound, true);
         
-        $tickets = $ticketRepository->findBy(["gameRound" => $gameRound]); //specificna metoda npr findByGameRound
-
-        //dd($tickets);
-        
+        $tickets = $this->ticketRepository->findByGameRound($gameRound);
         $this->ticketToGameRoundCombinationMatcher->createTicketResult($tickets);
         
         return new RedirectResponse('/admin');

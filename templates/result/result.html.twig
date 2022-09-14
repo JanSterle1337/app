@@ -1,52 +1,63 @@
 {% extends 'home.html.twig' %}
 
 {% block main %}
-    <h1 class="text-center mt-3 mb-4">Results</h1>
-    <div class="container">
-        <table class="datagrid w-100">
-            <thead>
-            <tr>
-                <td class="text-center"><b>Ticket id</b></td>
-                <td class="text-center"><b>event</b></td>
-                <td class="text-center"><b>played combination</b></td>
-                <td class="text-center"><b>event combination</b></td>
-                <td class="text-center"><b>matched numbers</b></td>
-            </tr> 
-            </thead> 
-            <tbody>
-             <hr>
-                {% for ticket in userAndTickets %}
-                    <tr>
-                        <td class="text-center">{{ ticket.getId }}</td>
-                        <td class="text-center">{{ ticket.getGameRound.getName }}</td>
-                        <td class="text-center">
-                            {% for key, number in ticket.getCombination.getNumbers %}
-                                    {{number}}
-                            {% endfor %}
-                            
-                        </td>
-                        <td class="text-center">
-                            {% if ticket.getGameRound.getDrawnCombination|length > 0  %}
-                                {% for number in ticket.getGameRound.getDrawnCombination %}
-                                    {{ number }}
-                                {% endfor %}
-                            {% else %}
-                            <span>/</span>
-                            {% endif %}
-                        </td>
-                        <td class="text-center">
-                        {% for number in ticket.getMatchedNumbers %}
-                            {% if number %}
-                                {{ number }}
-                            {% else %} 
-                                <span>/</span>
-                            {% endif %}
-                        {% endfor %}
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
 
+    {% if userTickets is defined and userTickets is not null %}
+        <h1 class="text-center mt-3 mb-4">Results</h1>
+        <div class="container">
+            <table class="datagrid w-100">
+                <thead>
+                <tr>
+                    <td class="text-center"><b>Ticket id</b></td>
+                    <td class="text-center"><b>event</b></td>
+                    <td class="text-center"><b>played combination</b></td>
+                    <td class="text-center"><b>event combination</b></td>
+                    <td class="text-center"><b>matched numbers</b></td>
+                </tr> 
+                </thead> 
+                <tbody>
+                <hr>
+                    {% for ticket in userTickets %}
+                        <tr>
+                            <td class="text-center">{{ ticket.getId }}</td>
+                            <td class="text-center">{{ ticket.getGameRound.getName }}</td>
+                            <td class="text-center">
+                                {% for key, number in ticket.getCombination.getNumbers %}
+                                        {{number}}
+                                {% endfor %}
+                                
+                            </td>
+                            <td class="text-center">
+                            {% if ticket.getGameRound.getDrawnCombination.getNumbers is defined and ticket.getGameRound.getDrawnCombination.getNumbers is not null %}
+                                {% if ticket.getGameRound.getDrawnCombination.getNumbers|length > 0  %}
+                                    {% for number in ticket.getGameRound.getDrawnCombination.getNumbers %}
+                                        {{ number }}
+                                    {% endfor %}
+                                {% else %}
+                                <span>/</span>
+                                {% endif %}
+                            {% endif %}
+                            </td>
+                            <td class="text-center">
+                            {% if ticket.getMatchedCombination.getNumbers is defined and ticket.getMatchedCombination.getNumbers is not null %}
+                                {% for number in ticket.getMatchedCombination.getNumbers %}
+                                    {% if number %}
+                                        {{ number }}
+                                    {% else %} 
+                                        <span>/</span>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}     
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="container mt-4">
+            <h4 class="text-center mt-3">{{ errors }}</h4>
+            <h5 class="text-center mt-3">Click <a href="/games">here</a> to buy ticket</h5>
+         </div>
+    {% endif %}
 {% endblock %}

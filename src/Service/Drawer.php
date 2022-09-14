@@ -2,7 +2,7 @@
 namespace App\Service;
 
 use App\Entity\Game;
-use App\Entity\GameCombination;
+use App\Entity\Combination;
 
 class Drawer 
 {
@@ -13,7 +13,7 @@ class Drawer
         $this->duplicateNumberChecker = $duplicateNumberChecker;
     }
 
-    public function drawCombination(Game $game): GameCombination
+    public function drawCombination(Game $game): Combination
     {
         $numbers = [];
 
@@ -26,7 +26,7 @@ class Drawer
 
         } while (count($numbers) < $game->getHowManyNumbers());
 
-        return new GameCombination($this->duplicateNumberChecker, $numbers);
+        return new Combination($this->duplicateNumberChecker, $numbers);
     }
 
 }

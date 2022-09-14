@@ -38,6 +38,38 @@ class GameRoundRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
+    public function findOneById($id): ?GameRound
+    {
+        return $this->createQueryBuilder('g')
+            ->andWhere('g.id = :id')
+            ->setParameter('id', $id)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
+
+    public function findNotPlayedYet()
+    {
+        return $this->createQueryBuilder('g')
+            ->andWhere('g.playedAlready = :val')
+            ->setParameter('val', false)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findNotPlayedYetBySlug($slug): ?GameRound
+    {
+        return $this->createQueryBuilder('g')
+        ->andWhere('g.name = :slug')
+        ->andWhere('g.playedAlready = :played')
+        ->setParameter('slug', $slug)
+        ->setParameter('played', false)
+        ->getQuery()
+        ->getOneOrNullResult()
+        ;
+    }
  
 //    /**
 //     * @return GameRound[] Returns an array of GameRound objects

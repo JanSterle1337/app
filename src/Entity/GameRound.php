@@ -16,8 +16,9 @@ class GameRound
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::ARRAY, nullable: true)]
-    private array $drawnCombination = [];
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: true)]
+    private  ?Combination $drawnCombination = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $scheduledAt = null;
@@ -47,16 +48,17 @@ class GameRound
         return $this->id;
     }
 
-    public function getDrawnCombination(): array
+    public function setDrawnCombination(Combination $combination): self
     {
-        return $this->drawnCombination;
+        $this->drawnCombination = $combination;
+        $this->playedAlready = true;
+        
+        return $this;
     }
 
-    public function setDrawnCombination(?array $drawnCombination): self
+    public function getDrawnCombination(): ?Combination
     {
-        $this->drawnCombination = $drawnCombination;
-
-        return $this;
+        return $this->drawnCombination;
     }
 
     public function getScheduledAt(): ?\DateTimeImmutable
@@ -106,12 +108,5 @@ class GameRound
     public function isPlayedAlready(): ?bool
     {
         return $this->playedAlready;
-    }
-
-    public function setPlayedAlready(bool $playedAlready): self
-    {
-        $this->playedAlready = $playedAlready;
-
-        return $this;
     }
 }

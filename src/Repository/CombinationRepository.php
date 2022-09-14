@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\GameCombination;
+use App\Entity\Combination;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<GameCombination>
+ * @extends ServiceEntityRepository<Combination>
  *
- * @method GameCombination|null find($id, $lockMode = null, $lockVersion = null)
- * @method GameCombination|null findOneBy(array $criteria, array $orderBy = null)
- * @method GameCombination[]    findAll()
- * @method GameCombination[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Combination|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Combination|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Combination[]    findAll()
+ * @method Combination[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class GameCombinationRepository extends ServiceEntityRepository
+class CombinationRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, GameCombination::class);
+        parent::__construct($registry, Combination::class);
     }
 
-    public function add(GameCombination $entity, bool $flush = false): void
+    public function add(Combination $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class GameCombinationRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(GameCombination $entity, bool $flush = false): void
+    public function remove(Combination $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -40,7 +40,7 @@ class GameCombinationRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return GameCombination[] Returns an array of GameCombination objects
+//     * @return Combination[] Returns an array of Combination objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,7 +54,7 @@ class GameCombinationRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?GameCombination
+//    public function findOneBySomeField($value): ?Combination
 //    {
 //        return $this->createQueryBuilder('g')
 //            ->andWhere('g.exampleField = :val')

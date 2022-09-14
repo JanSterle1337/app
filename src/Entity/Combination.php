@@ -2,14 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\GameCombinationRepository;
+use App\Repository\CombinationRepository;
 use App\Service\BoundaryChecker;
 use App\Service\DuplicateNumberChecker;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: GameCombinationRepository::class)]
-class GameCombination
+#[ORM\Entity(repositoryClass: CombinationRepository::class)]
+class Combination
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -45,5 +45,10 @@ class GameCombination
         $this->numbers = $numbers;
 
         return $this;
+    }
+
+    public function numbersLength(): int 
+    {
+        return count($this->getNumbers());
     }
 }

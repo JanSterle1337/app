@@ -11,7 +11,7 @@ class CheckCombinationFormatTest extends TestCase
     public function testOptimalCase(): void 
     {
         $checkCombinationFormat = new CheckCombinationFormat();
-        $result = $checkCombinationFormat->checkComboFormat("1, 20, 30, 32, 34, 50", 6);
+        $result = $checkCombinationFormat->isCombinationValid("1, 20, 30, 32, 34, 50", 6);
         $this->assertSame(true, $result);
     }
 
@@ -19,7 +19,7 @@ class CheckCombinationFormatTest extends TestCase
     public function testWrongInputedCombinationCase(): void 
     {
         $checkCombinationFormat = new CheckCombinationFormat();
-        $result = $checkCombinationFormat->checkComboFormat("1,20,30,32,34,50", 6);
+        $result = $checkCombinationFormat->isCombinationValid("1,20,30,32,34,50", 6);
         $this->assertSame(false, $result);
     }
 
@@ -27,7 +27,7 @@ class CheckCombinationFormatTest extends TestCase
     public function testWrongInputedRepetitionCase(): void 
     {
         $checkCombinationFormat = new CheckCombinationFormat();
-        $result = $checkCombinationFormat->checkComboFormat("1, 20, 30, 32, 34, 50", 5);
+        $result = $checkCombinationFormat->isCombinationValid("1, 20, 30, 32, 34, 50", 5);
         $this->assertSame(false, $result);
 
     }

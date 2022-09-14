@@ -51,6 +51,18 @@ class TicketRepository extends ServiceEntityRepository
         ->getResult();
     }
 
+    public function findByGameRound($gameRound)
+    {
+        return $this->createQueryBuilder('ticket')
+        ->join('ticket.gameRound', 'gameRound')
+        ->addSelect('ticket')
+        ->andWhere('gameRound = :gameRound')
+        ->setParameter('gameRound', $gameRound)
+        ->getQuery()
+        ->getResult()
+        ;
+    }
+
 //    /**
 //     * @return Ticket[] Returns an array of Ticket objects
 //     */
