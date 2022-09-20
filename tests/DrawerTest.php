@@ -3,7 +3,7 @@
 namespace App\Tests;
 
 use App\Entity\Game;
-use App\Entity\GameCombination;
+use App\Entity\Combination;
 use App\Service\Drawer;
 use App\Service\DuplicateNumberChecker;
 use PHPUnit\Framework\TestCase;
@@ -25,7 +25,7 @@ class DrawerTest extends TestCase
         $this->assertIsObject($expectedCombination);
 
         //remove
-        $this->assertClassHasAttribute("numbers", GameCombination::class); //combination shpuld include a method for length of array
+        $this->assertClassHasAttribute("numbers", Combination::class); //combination shpuld include a method for length of array
 
         $numbers = $expectedCombination->getNumbers();
         $howManyNumbers = $expectedCombination->numbersLength();

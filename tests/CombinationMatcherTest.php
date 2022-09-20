@@ -2,7 +2,7 @@
 
 namespace App\Tests;
 
-use App\Entity\GameCombination;
+use App\Entity\Combination;
 use App\Service\CombinationMatcher;
 use App\Service\DuplicateNumberChecker;
 use PHPUnit\Framework\TestCase;
@@ -14,11 +14,11 @@ class CombinationMatcherTest extends TestCase
         $duplicateNumberChecker = new DuplicateNumberChecker();
         $combinationMatcher = new CombinationMatcher($duplicateNumberChecker);
 
-        $expectedGameCombination = new GameCombination($duplicateNumberChecker, [4, 5]);
-        $gameCombination = $combinationMatcher->createIntersectedCombination([1, 2, 3, 4, 5], [4, 6, 5, 10, 11]);
+        $expectedCombination = new Combination($duplicateNumberChecker, [4, 5]);
+        $combination = $combinationMatcher->createIntersectedCombination([1, 2, 3, 4, 5], [4, 6, 5, 10, 11]);
 
-        $this->assertIsObject($gameCombination);
-        $this->assertEquals($expectedGameCombination, $gameCombination);
+        $this->assertIsObject($combination);
+        $this->assertEquals($expectedCombination, $combination);
     }
 
     public function testDoesntMatchAnyNumbers(): void 
@@ -26,10 +26,10 @@ class CombinationMatcherTest extends TestCase
         $duplicateNumberChecker = new DuplicateNumberChecker();
         $combinationMatcher = new CombinationMatcher($duplicateNumberChecker);
 
-        $expectedGameCombination = new GameCombination($duplicateNumberChecker, []);
-        $gameCombination = $combinationMatcher->createIntersectedCombination([1, 2, 3, 4, 5], [10, 20, 30, 40, 50]);
+        $expectedCombination = new Combination($duplicateNumberChecker, []);
+        $combination = $combinationMatcher->createIntersectedCombination([1, 2, 3, 4, 5], [10, 20, 30, 40, 50]);
 
-        $this->assertIsObject($gameCombination);
-        $this->assertEquals($expectedGameCombination, $gameCombination);
+        $this->assertIsObject($combination);
+        $this->assertEquals($expectedCombination, $combination);
     }
 }

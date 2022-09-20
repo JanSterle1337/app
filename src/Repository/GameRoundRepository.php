@@ -50,6 +50,16 @@ class GameRoundRepository extends ServiceEntityRepository
             ;
     }
 
+    public function findByIsPlayedYet($playedAlready): array
+    {
+        return $this->createQueryBuilder('g')
+            ->andWhere('g.playedAlready = :val')
+            ->setParameter('val', $playedAlready)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
     public function findNotPlayedYet()
     {
         return $this->createQueryBuilder('g')

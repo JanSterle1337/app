@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Unauthorized{% endblock %}
+
+{% block body %}
+    <div  class="h-100 d-flex align-items-center justify-content-center">
+        <div class="d-flex flex-column">
+            <h1 class="text-center">Access to this page is restricted</h1>
+            <p class="fw-bold text-danger text-center">Please check with the site admin if you believe this is a mistake</p>
+            <a class="text-center" href="/">Home</a>
+        </div>
+    </div>
+{% endblock %}
