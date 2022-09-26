@@ -32,8 +32,6 @@ class GameRoundRepositoryTest extends KernelTestCase
         $this->assertSame(15, $gameRound->getDrawnCombination()->getId());
         $this->assertSame(true, $gameRound->isPlayedAlready());
         $this->assertSame('Wednesday Honeymoon #1', $gameRound->getName());
-        // $routerService = static::getContainer()->get('router');
-        // $myCustomService = static::getContainer()->get(CustomService::class);
     }
 
     public function testNullFindOneById(): void 
@@ -127,7 +125,6 @@ class GameRoundRepositoryTest extends KernelTestCase
     {
         parent::tearDown();
 
-        // doing this is recommended to avoid memory leaks
         $this->entityManager->close();
         $this->entityManager = null;
     }

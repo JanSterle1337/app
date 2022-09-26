@@ -39,8 +39,6 @@ class CombinationRepositoryTest extends KernelTestCase
 
         $this->assertSame('test', $kernel->getEnvironment());
         $this->assertSame([20, 21, 22, 33, 44], $insertedCombo->getNumbers());
-        // $routerService = static::getContainer()->get('router');
-        // $myCustomService = static::getContainer()->get(CustomService::class);
     }
 
     protected function tearDown(): void
