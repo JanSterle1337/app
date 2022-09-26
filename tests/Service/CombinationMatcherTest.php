@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests;
+namespace App\Service\Tests;
 
 use App\Entity\Combination;
 use App\Service\CombinationMatcher;

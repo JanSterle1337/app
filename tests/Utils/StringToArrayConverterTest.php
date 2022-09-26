@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests;
+namespace App\Utils\Tests;
 
 use App\Utils\PrintArrayNumbersInString;
 use PHPUnit\Framework\TestCase;

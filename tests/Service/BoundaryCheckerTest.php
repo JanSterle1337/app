@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests;
+namespace App\Service\Tests;
 
 use App\Service\BoundaryChecker;
 use PHPUnit\Framework\TestCase;

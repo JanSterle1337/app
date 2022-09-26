@@ -49,10 +49,23 @@ class ShowTicketsStatusCommand extends Command
             $gameRoundNumbers = $this->printArrayNumbersInString->convert($gameRoundNumbers);
             $matchedNumbers = $this->printArrayNumbersInString->convert($matchedNumbers);
             
-           $table->addRow([$ticket->getId(), $ticket->getUser()->getEmail(), $ticket->getGameRound()->getId(), $ticket->getGameRound()->getName(), $playedNumbers, $gameRoundNumbers, $matchedNumbers]);
+           $table->addRow([
+            $ticket->getId(), 
+            $ticket->getUser()->getEmail(), 
+            $ticket->getGameRound()->getId(), 
+            $ticket->getGameRound()->getName(), 
+            $playedNumbers, 
+            $gameRoundNumbers, 
+            $matchedNumbers
+        ]);
         }
 
         $table->render();
         return Command::SUCCESS;
+    }
+
+    public function configure(): void 
+    {
+        $this->setHelp('This command shows you all the informations about all tickets that were played or are yet to be played in some event.');
     }
 }
