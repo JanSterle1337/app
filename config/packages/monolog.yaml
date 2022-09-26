@@ -36,6 +36,11 @@ when@test:
                 type: stream
                 path: "%kernel.logs_dir%/%kernel.environment%.log"
                 level: debug
+            test:
+                type: test
+                level: debug
+                process_psr_3_messages: false
+                channels: ["!event", "!doctrine"]
 
 when@prod:
     monolog:
